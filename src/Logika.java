@@ -105,7 +105,7 @@ class Logika {
                     "=  3. Pridat dron         =\n" +
                     "=  4. Vypisat drony       =\n" +
                     "=  5. Vytvor objednavku   =\n" +
-                    "=  6. Vytvor objednavku   =\n" +
+                    "=  6. Naplanuj let        =\n" +
                     "=  7. Krok den            =\n" +
                     "=  8. Krok cas            =\n" +
                     "===========================\n" +
