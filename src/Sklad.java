@@ -1,14 +1,18 @@
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class Sklad {
     private String nazov;
     private ArrayList<Dron> drony;
     private Vozidlo vozidlo;
+    private Queue<Objednavka> objednavky;
 
     public Sklad(String nazov) {
         this.nazov = nazov;
         this.drony = new ArrayList<>();
         this.vozidlo = null;
+        this.objednavky = new LinkedList<Objednavka>();
     }
 
     public String getNazov() {
@@ -33,5 +37,17 @@ public class Sklad {
         } else {
             System.out.println("Zoznam dronov je prazdny!");
         }
+    }
+
+    public void pridajObjednavku(Objednavka o) {
+        this.objednavky.add(o);
+    }
+
+    public Objednavka getObjednavku() {
+        return this.objednavky.peek();
+    }
+
+    public Objednavka remObjednavku() {
+        return this.objednavky.poll();
     }
 }

@@ -1,19 +1,17 @@
 import java.util.*;
 
-public class Logika {
+class Logika {
 
     private Scanner sc;
     private Sklad[] sklady;
     private CentralnySklad centralnySklad;
     private Datum datum;
     private int cas;
-    private Queue<Objednavka> objednavky;
 
-    public Logika() {
+    Logika() {
         this.sc = new Scanner(System.in);
         this.centralnySklad = new CentralnySklad("ZA");
         this.sklady = new Sklad[25];
-        this.objednavky = new LinkedList<Objednavka>();
 
         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("Europe/Prague"));
         cal.setTime(new Date());
@@ -23,21 +21,19 @@ public class Logika {
         this.vytvorSietPrekladisk();
     }
 
-    public String krokCas() {
+    private void krokCas() {
         if (this.cas == 23) {
             this.cas = 7;
             this.datum.krok();
-        } else {
+        } else
             this.cas++;
-        }
+    }
+
+    private String getCas() {
         return this.cas + ":00";
     }
 
-    public String getCas() {
-        return this.cas + ":00";
-    }
-
-    public void vytvorSietPrekladisk() {
+    private void vytvorSietPrekladisk() {
         this.sklady[0] = centralnySklad;
         LokalnePrekladisko BA = new LokalnePrekladisko("BA");
         this.sklady[1] = BA;
@@ -95,10 +91,9 @@ public class Logika {
         this.sklady[24] = HE;
     }
 
-    public void start() {
+    void start() {
         int volba;
         boolean loop = true;
-        String nazovSkladu;
 
         do {
             System.out.println(this.datum.toString() + " " + this.getCas());
@@ -110,8 +105,9 @@ public class Logika {
                     "=  3. Pridat dron         =\n" +
                     "=  4. Vypisat drony       =\n" +
                     "=  5. Vytvor objednavku   =\n" +
-                    "=  6. Krok den            =\n" +
-                    "=  7. Krok cas            =\n" +
+                    "=  6. Vytvor objednavku   =\n" +
+                    "=  7. Krok den            =\n" +
+                    "=  8. Krok cas            =\n" +
                     "===========================\n" +
                     "=  Zadaj volbu:		      =\n");
             volba = this.sc.nextInt();
@@ -135,9 +131,12 @@ public class Logika {
                     vytvorObjednavku();
                     break;
                 case 6:
-                    this.datum.krok();
+                    vyzdvihnutieZasielky();
                     break;
                 case 7:
+                    this.datum.krok();
+                    break;
+                case 8:
                     krokCas();
                     break;
                 default:
@@ -146,8 +145,8 @@ public class Logika {
         } while(loop);
     }
 
-    public void pridanieVozidla() {
-        String spz;
+    private void pridanieVozidla() {
+        String spz, region;
         double nosnost, naklady;
 
         System.out.println("Zadaj spz: ");
@@ -156,17 +155,25 @@ public class Logika {
         nosnost = this.sc.nextDouble();
         System.out.println("Zadaj naklady: ");
         naklady = this.sc.nextDouble();
+        System.out.println("Zadaj trasu: \nCielovy region: ");
+        region = this.sc.next();
 
         Vozidlo v = new Vozidlo(spz, nosnost, naklady);
         this.centralnySklad.pridajVozidlo(v);
         System.out.println("Vozidlo bolo pridane.");
+
+        for (Sklad s : this.sklady) {
+            if (s.getNazov().equals(region)) {
+                s.setVozidlo(v);
+            }
+        }
     }
 
-    public void vypisVozidiel() {
+    private void vypisVozidiel() {
         this.centralnySklad.vypisVozidla();
     }
 
-    public void pridanieDronu() {
+    private void pridanieDronu() {
         String serioveCislo, nazovSkladu;
         int typ;
         boolean najdeny = false;
@@ -174,8 +181,8 @@ public class Logika {
         System.out.println("Zadaj nazov skladu: ");
         nazovSkladu = this.sc.next();
 
-        for (int i = 0; i < this.sklady.length; i++) {
-            if (this.sklady[i].getNazov().equals(nazovSkladu)) {
+        for (Sklad sklad : this.sklady) {
+            if (sklad.getNazov().equals(nazovSkladu)) {
                 najdeny = true;
                 System.out.println("Zadaj seriove cislo: ");
                 serioveCislo = this.sc.next();
@@ -183,7 +190,7 @@ public class Logika {
                 typ = this.sc.nextInt();
                 Dron d = new Dron(serioveCislo, typ);
                 d.setDatum(this.datum);
-                this.sklady[i].pridajDron(d);
+                sklad.pridajDron(d);
                 System.out.println("Dron bol pridany do zoznamu.");
             }
         }
@@ -191,24 +198,24 @@ public class Logika {
             System.out.println("Nespravny nazov skladu!");
     }
 
-    public void vypisDronov() {
+    private void vypisDronov() {
         String nazovSkladu;
         boolean najdeny = false;
 
         System.out.println("Zadaj nazov skladu: ");
         nazovSkladu = this.sc.next();
 
-        for (int i = 0; i < this.sklady.length; i++) {
-            if (this.sklady[i].getNazov().equals(nazovSkladu)) {
+        for (Sklad sklad : this.sklady) {
+            if (sklad.getNazov().equals(nazovSkladu)) {
                 najdeny = true;
-                this.sklady[i].vypisDrony();
+                sklad.vypisDrony();
             }
         }
         if (!najdeny)
             System.out.println("Nespravny nazov skladu!");
     }
 
-    public void vytvorObjednavku() {
+    private void vytvorObjednavku() {
         double hmotnostZasielky, vzdialenost_x, vzdialenost_y;
         String region_x, region_y;
 
@@ -229,13 +236,15 @@ public class Logika {
 
         boolean zamietnuta_x = true;
         boolean zamietnuta_y = true;
+        Sklad sklad = null;
 
         for (Sklad s : this.sklady) {
             if (s.getNazov().equals(region_x)) {
+                sklad = s;
                 for (Dron d : s.getDrony()) {
                     if ((vzdialenost_x / d.getRychlost()) + this.cas <= 22 &&
-                            (d.getDobaLetu() / 60) * d.getRychlost() >= vzdialenost_x &&
-                            d.getNosnost() >= hmotnostZasielky&&
+                            ((double)d.getDobaLetu() / 60) * d.getRychlost() >= vzdialenost_x &&
+                            d.getNosnost() >= hmotnostZasielky &&
                             s.getVozidlo().getAktualnaNosnost() + hmotnostZasielky <= s.getVozidlo().getNosnost()) {
                         zamietnuta_x = false;
                     } else {
@@ -248,7 +257,7 @@ public class Logika {
         for (Sklad s : this.sklady) {
             if (s.getNazov().equals(region_y)) {
                 for (Dron d: s.getDrony()) {
-                    if ((d.getDobaLetu() / 60) * d.getRychlost() >= vzdialenost_y &&
+                    if (((double)d.getDobaLetu() / 60) * d.getRychlost() >= vzdialenost_y &&
                             d.getNosnost() >= hmotnostZasielky) {
                         zamietnuta_y = false;
                     } else {
@@ -260,9 +269,49 @@ public class Logika {
 
         if (!zamietnuta_x && !zamietnuta_y) {
             Objednavka objednavka = new Objednavka(hmotnostZasielky, miesto_o, miesto_p);
-            this.objednavky.add(objednavka);
+            sklad.pridajObjednavku(objednavka);
             System.out.println("Objednavka bola prijata.");
         } else
             System.out.println("Objednavka bola zamietnuta.");
+    }
+
+    private void vyzdvihnutieZasielky() {
+        ArrayList<Dron> vhodneDronyT1 = new ArrayList<>();
+        ArrayList<Dron> vhodneDronyT2 = new ArrayList<>();
+
+        for (Sklad s : this.sklady) {
+            if (!s.getDrony().isEmpty()) {
+                for (Dron d : s.getDrony()) {
+                    if (((double)d.getDobaLetu() / 60) * d.getRychlost() >= s.getObjednavku().getMiesto_o().getVzdialenost() &&
+                            d.getNosnost() >= s.getObjednavku().getHmotnost() && d.getDostupnost()) {
+                        if (d.getTypString().equals("I")) {
+                            vhodneDronyT1.add(d);
+                        } else {
+                            vhodneDronyT2.add(d);
+                        }
+                    } else {
+                        System.out.println("Naplanovanie sa nezdarilo.");
+                    }
+                }
+                porovnaj(vhodneDronyT1.isEmpty() ? vhodneDronyT2 : vhodneDronyT1);
+                if (!vhodneDronyT1.isEmpty()) {
+                    vhodneDronyT1.get(0).setObjednavka(s.remObjednavku());
+                    System.out.println("Success T1");
+                } else {
+                    vhodneDronyT2.get(0).setObjednavka(s.remObjednavku());
+                    System.out.println("Success T2");
+                }
+            }
+            System.out.println("Ak je tento čas väčší ako jedna hodina, zákazník je\n" +
+                    "o tom informovaný a objednávku môže zrušiť");
+        }
+    }
+
+    private void porovnaj(ArrayList<Dron> list) {
+        list.sort((d1, d2) -> {
+            Integer i1 = d1.getAktualneNabitie();
+            Integer i2 = d2.getAktualneNabitie();
+            return i2.compareTo(i1);
+        });
     }
 }

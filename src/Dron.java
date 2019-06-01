@@ -8,6 +8,8 @@ public class Dron {
     private int nosnost, rychlost, dobaLetu, dobaNabijania, pocetNalHod, pocetPrepZas;
     private Datum datum;
     private boolean jeDostupny;
+    private int aktualneNabitie;
+    private Objednavka objednavka;
 
     public Dron(String serioveCislo, int typ) {
         this.serioveCislo = serioveCislo;
@@ -29,6 +31,8 @@ public class Dron {
         this.pocetNalHod = 0;
         this.pocetPrepZas = 0;
         this.jeDostupny = true;
+        this.aktualneNabitie = 100;
+        this.objednavka = null;
     }
 
     public String getTypString() {
@@ -56,6 +60,10 @@ public class Dron {
 
     public boolean getDostupnost() { return this.jeDostupny; }
 
+    public int getAktualneNabitie() { return this.aktualneNabitie; }
+
+    public Objednavka getObjednavka () { return this.objednavka; }
+
     public void setDatum(Datum datum) {
         this.datum = datum;
     }
@@ -64,5 +72,9 @@ public class Dron {
 
     public String getDatum() {
         return this.datum.toString();
+    }
+
+    public void setObjednavka(Objednavka o) {
+        this.objednavka = o;
     }
 }
