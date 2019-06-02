@@ -1,5 +1,7 @@
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class Dron {
 
@@ -9,7 +11,7 @@ public class Dron {
     private Datum datum;
     private boolean jeDostupny;
     private int aktualneNabitie;
-    private Objednavka objednavka;
+    private Queue<Objednavka> objednavky;
 
     public Dron(String serioveCislo, int typ) {
         this.serioveCislo = serioveCislo;
@@ -32,7 +34,7 @@ public class Dron {
         this.pocetPrepZas = 0;
         this.jeDostupny = true;
         this.aktualneNabitie = 100;
-        this.objednavka = null;
+        this.objednavky = new LinkedList<Objednavka>();
     }
 
     public String getTypString() {
@@ -62,7 +64,7 @@ public class Dron {
 
     public int getAktualneNabitie() { return this.aktualneNabitie; }
 
-    public Objednavka getObjednavka () { return this.objednavka; }
+    public Objednavka getObjednavka () { return this.objednavky.peek(); }
 
     public void setDatum(Datum datum) {
         this.datum = datum;
@@ -74,7 +76,7 @@ public class Dron {
         return this.datum.toString();
     }
 
-    public void setObjednavka(Objednavka o) {
-        this.objednavka = o;
+    public void addObjednavka(Objednavka o) {
+        this.objednavky.add(o);
     }
 }

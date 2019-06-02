@@ -42,7 +42,6 @@ class Logika {
         LokalnePrekladisko TT = new LokalnePrekladisko("TT");
         this.sklady[3] = TT;
 
-
         LokalnePrekladisko KN = new LokalnePrekladisko("KN");
         this.sklady[4] = KN;
         LokalnePrekladisko LV = new LokalnePrekladisko("LV");
@@ -278,32 +277,70 @@ class Logika {
     private void vyzdvihnutieZasielky() {
         ArrayList<Dron> vhodneDronyT1 = new ArrayList<>();
         ArrayList<Dron> vhodneDronyT2 = new ArrayList<>();
+        ArrayList<Dron> obsadeneDrony = new ArrayList<>();
+        Dron vhodnyDron = null;
+        double hodina;
+        int volba;
 
         for (Sklad s : this.sklady) {
             if (!s.getDrony().isEmpty()) {
                 for (Dron d : s.getDrony()) {
-                    if (((double)d.getDobaLetu() / 60) * d.getRychlost() >= s.getObjednavku().getMiesto_o().getVzdialenost() &&
-                            d.getNosnost() >= s.getObjednavku().getHmotnost() && d.getDostupnost()) {
-                        if (d.getTypString().equals("I")) {
-                            vhodneDronyT1.add(d);
-                        } else {
-                            vhodneDronyT2.add(d);
+                    if (d.getDostupnost()) {
+                        if (((double)d.getDobaLetu() / 60) * d.getRychlost() >= s.getObjednavku().getMiesto_o().getVzdialenost() &&
+                                d.getNosnost() >= s.getObjednavku().getHmotnost()) {
+                            if (d.getTypString().equals("I")) {
+                                vhodneDronyT1.add(d);
+                            } else {
+                                vhodneDronyT2.add(d);
+                            }
                         }
                     } else {
-                        System.out.println("Naplanovanie sa nezdarilo.");
+                        obsadeneDrony.add(d);
                     }
                 }
-                porovnaj(vhodneDronyT1.isEmpty() ? vhodneDronyT2 : vhodneDronyT1);
-                if (!vhodneDronyT1.isEmpty()) {
-                    vhodneDronyT1.get(0).setObjednavka(s.remObjednavku());
-                    System.out.println("Success T1");
+                if (!obsadeneDrony.isEmpty() && vhodneDronyT1.isEmpty() && vhodneDronyT2.isEmpty()) {
+                    vhodnyDron = obsadeneDrony.get(0);
+                    for (Dron d : obsadeneDrony) {
+                        if (vhodnyDron.getObjednavka().getMiesto_o().getVzdialenost() / vhodnyDron.getRychlost() > d.getObjednavka().getMiesto_o().getVzdialenost() / d.getRychlost()) {
+                            vhodnyDron = d;
+                        }
+                    }
+                    hodina = vhodnyDron.getObjednavka().getMiesto_o().getVzdialenost() / vhodnyDron.getRychlost();
+                    if (hodina > 1) {
+                        System.out.println("Vsetky drony su obsadene. \nNajblizsie vyzdvihnutie zasielky sa predpoklada o " + hodina + " hodin.");
+                        System.out.println("1. Zrusit objednavku.");
+                        System.out.println("2. Pokracovat");
+                        volba = this.sc.nextInt();
+                        switch (volba) {
+                            case 1:
+                                s.remObjednavku();
+                                System.out.println("Objednavka bola zrusena.");
+                                break;
+                            case 2:
+                                vhodnyDron.addObjednavka(s.remObjednavku());
+                                break;
+                            default:
+                                System.out.println("Nespravna volba.");
+                                break;
+                        }
+                    } else {
+                        vhodnyDron.addObjednavka(s.remObjednavku());
+                    }
                 } else {
-                    vhodneDronyT2.get(0).setObjednavka(s.remObjednavku());
-                    System.out.println("Success T2");
+                    porovnaj(vhodneDronyT1.isEmpty() ? vhodneDronyT2 : vhodneDronyT1);
+                    if (!vhodneDronyT1.isEmpty()) {
+                        vhodneDronyT1.get(0).addObjednavka(s.remObjednavku());
+                        vhodneDronyT1.get(0).setDostupnost(false);
+                        System.out.println("Success T1");
+                    } else {
+                        vhodneDronyT2.get(0).addObjednavka(s.remObjednavku());
+                        vhodneDronyT2.get(0).setDostupnost(false);
+                        System.out.println("Success T2");
+                    }
                 }
+            } else {
+                System.out.println("V tomto sklade sa nenachadzaju ziadne drony.");
             }
-            System.out.println("Ak je tento čas väčší ako jedna hodina, zákazník je\n" +
-                    "o tom informovaný a objednávku môže zrušiť");
         }
     }
 
