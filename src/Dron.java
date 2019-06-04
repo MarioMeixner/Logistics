@@ -7,7 +7,8 @@ public class Dron {
 
     private String serioveCislo;
     private TypDronu typDronu;
-    private int nosnost, rychlost, dobaLetu, dobaNabijania, pocetNalHod, pocetPrepZas;
+    private int nosnost, rychlost, dobaLetu, dobaNabijania, pocetPrepZas;
+    private double pocetNalHod;
     private Datum datum;
     private boolean jeDostupny;
     private int aktualneNabitie;
@@ -52,7 +53,7 @@ public class Dron {
 
     public int getNosnost() { return this.nosnost; }
 
-    public int getPocetNalHod() {
+    public double getPocetNalHod() {
         return this.pocetNalHod;
     }
 
@@ -73,6 +74,10 @@ public class Dron {
     }
 
     public void setDostupnost(boolean hodnota) { this.jeDostupny = hodnota; }
+
+    public void setPocetNalHod(double hodnota) { this.pocetNalHod += hodnota; }
+
+    public void pridajPocetPrepZas() { this.pocetPrepZas++; }
 
     public String getDatum() {
         return this.datum.toString();
