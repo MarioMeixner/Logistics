@@ -7,12 +7,14 @@ public class Sklad {
     private ArrayList<Dron> drony;
     private Vozidlo vozidlo;
     private Queue<Objednavka> objednavky;
+    private ArrayList<Objednavka> zasielky;
 
     public Sklad(String nazov) {
         this.nazov = nazov;
         this.drony = new ArrayList<>();
         this.vozidlo = null;
         this.objednavky = new LinkedList<Objednavka>();
+        this.zasielky = new ArrayList<>();
     }
 
     public String getNazov() {
@@ -49,5 +51,9 @@ public class Sklad {
 
     public Objednavka remObjednavku() {
         return this.objednavky.poll();
+    }
+
+    public void pridajZasielku(Objednavka o) {
+        this.zasielky.add(o);
     }
 }

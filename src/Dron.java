@@ -64,7 +64,9 @@ public class Dron {
 
     public int getAktualneNabitie() { return this.aktualneNabitie; }
 
-    public Objednavka getObjednavka () { return this.objednavky.peek(); }
+    public Objednavka getObjednavka() { return this.objednavky.peek(); }
+
+    public Objednavka remObjednavka() { return this.objednavky.poll(); }
 
     public void setDatum(Datum datum) {
         this.datum = datum;

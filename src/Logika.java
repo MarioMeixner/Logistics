@@ -285,17 +285,18 @@ class Logika {
         for (Sklad s : this.sklady) {
             if (!s.getDrony().isEmpty()) {
                 for (Dron d : s.getDrony()) {
-                    if (d.getDostupnost()) {
-                        if (((double)d.getDobaLetu() / 60) * d.getRychlost() >= s.getObjednavku().getMiesto_o().getVzdialenost() &&
-                                d.getNosnost() >= s.getObjednavku().getHmotnost()) {
+                    //vyhladanie vhodneho dronu na prenasku zasielky
+                    if (((double)d.getDobaLetu() / 60) * d.getRychlost() >= s.getObjednavku().getMiesto_o().getVzdialenost() &&
+                            d.getNosnost() >= s.getObjednavku().getHmotnost()) {
+                        if (d.getDostupnost()) {
                             if (d.getTypString().equals("I")) {
                                 vhodneDronyT1.add(d);
                             } else {
                                 vhodneDronyT2.add(d);
                             }
+                        } else {
+                            obsadeneDrony.add(d);
                         }
-                    } else {
-                        obsadeneDrony.add(d);
                     }
                 }
                 if (!obsadeneDrony.isEmpty() && vhodneDronyT1.isEmpty() && vhodneDronyT2.isEmpty()) {
@@ -313,10 +314,12 @@ class Logika {
                         volba = this.sc.nextInt();
                         switch (volba) {
                             case 1:
+                                //vymazanie objednavky z frontu v sklade
                                 s.remObjednavku();
                                 System.out.println("Objednavka bola zrusena.");
                                 break;
                             case 2:
+                                //priradenie zasielky vhodnemu dronu a vymazanie z frontu objednavok v sklade
                                 vhodnyDron.addObjednavka(s.remObjednavku());
                                 break;
                             default:
@@ -324,22 +327,34 @@ class Logika {
                                 break;
                         }
                     } else {
+                        //priradenie zasielky vhodnemu dronu a vymazanie z frontu objednavok v sklade
                         vhodnyDron.addObjednavka(s.remObjednavku());
                     }
                 } else {
                     porovnaj(vhodneDronyT1.isEmpty() ? vhodneDronyT2 : vhodneDronyT1);
                     if (!vhodneDronyT1.isEmpty()) {
+                        //priradenie zasielky vhodnemu dronu a vymazanie z frontu objednavok v sklade
                         vhodneDronyT1.get(0).addObjednavka(s.remObjednavku());
+                        //nastavenie hodnoty obsadenia
                         vhodneDronyT1.get(0).setDostupnost(false);
                         System.out.println("Success T1");
                     } else {
+                        //priradenie zasielky vhodnemu dronu a vymazanie z frontu objednavok v sklade
                         vhodneDronyT2.get(0).addObjednavka(s.remObjednavku());
+                        //nastavenie hodnoty obsadenia
                         vhodneDronyT2.get(0).setDostupnost(false);
                         System.out.println("Success T2");
                     }
                 }
-            } else {
-                System.out.println("V tomto sklade sa nenachadzaju ziadne drony.");
+            }
+
+            //prevzatie objednavky dronom do skladu
+            for (Dron d : s.getDrony()) {
+                while (d.getObjednavka() != null) {
+                    s.pridajZasielku(d.remObjednavka());
+                    d.setDostupnost(true);
+                    System.out.println("Zasielky boli dorucene do skladu.");
+                }
             }
         }
     }
