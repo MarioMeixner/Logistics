@@ -105,8 +105,10 @@ class Logika {
                     "=  4. Vypisat drony       =\n" +
                     "=  5. Vytvor objednavku   =\n" +
                     "=  6. Naplanuj let        =\n" +
-                    "=  7. Krok den            =\n" +
-                    "=  8. Krok cas            =\n" +
+                    "=  7. Navrat vozidiel do  =\n" +
+                    "=     centralneho skladu  =\n" +
+                    "=  8. Krok den            =\n" +
+                    "=  9. Krok cas            =\n" +
                     "===========================\n" +
                     "=  Zadaj volbu:		      =\n");
             volba = this.sc.nextInt();
@@ -133,9 +135,12 @@ class Logika {
                     vyzdvihnutieZasielky();
                     break;
                 case 7:
-                    this.datum.krok();
+                    navratVozidielDoCS();
                     break;
                 case 8:
+                    this.datum.krok();
+                    break;
+                case 9:
                     krokCas();
                     break;
                 default:
@@ -354,7 +359,15 @@ class Logika {
         }
     }
 
+    private void navratVozidielDoCS() {
+        for (Sklad s : this.sklady) {
+            s.nalozVozidlo();
+        }
+        this.centralnySklad.vylozVozidla();
+    }
+
     private void vyzdvihniZasielku(Dron d, Sklad s) {
+        ///////////////////////////////////////////////////////////////////////////////////////
         double hodina = d.getObjednavka().getMiesto_o().getVzdialenost() / d.getRychlost();
         d.addObjednavka(s.remObjednavku());
         d.setPocetNalHod(hodina);

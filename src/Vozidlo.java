@@ -1,9 +1,12 @@
+import java.util.ArrayList;
+
 public class Vozidlo {
 
     private final String spz;
     private final double nosnost;
     private final double naklady;
     private double aktualnaNosnost;
+    private ArrayList<Objednavka> zasielky;
 
     public Vozidlo(String spz, double nosnost, double naklady) {
         this.spz = spz;
@@ -27,4 +30,14 @@ public class Vozidlo {
     public double getAktualnaNosnost() { return this.aktualnaNosnost; }
 
     public void setAktualnaNosnost(double hodnota) { this.aktualnaNosnost = hodnota; }
+
+    public void nalozVozidlo(ArrayList<Objednavka> zasielky) { this.zasielky = zasielky; }
+
+    public void pridajZasielku(Objednavka o) {
+        this.zasielky.add(o);
+    }
+
+    public ArrayList<Objednavka> getZasielky() {
+        return this.zasielky;
+    }
 }

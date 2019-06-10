@@ -3,6 +3,7 @@ import java.util.ArrayList;
 public class CentralnySklad extends Sklad {
 
     private ArrayList<Vozidlo> vozidla;
+    private ArrayList<Objednavka> zasielky;
 
     public CentralnySklad(String nazov) {
         super(nazov);
@@ -20,6 +21,17 @@ public class CentralnySklad extends Sklad {
             }
         } else {
             System.out.println("Zoznam je prazdny.");
+        }
+    }
+
+    public void pridajZasielku(Objednavka o) {
+        this.zasielky.add(o);
+    }
+    public void vylozVozidla() {
+        for (Vozidlo v : this.vozidla) {
+            if (!v.getZasielky().isEmpty()) {
+                this.zasielky.addAll(v.getZasielky());
+            }
         }
     }
 }

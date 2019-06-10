@@ -56,4 +56,19 @@ public class Sklad {
     public void pridajZasielku(Objednavka o) {
         this.zasielky.add(o);
     }
+
+    public void nalozVozidlo() {
+        double hmotnost = 0;
+        int pocetZasielok = 0;
+
+        if (!this.zasielky.isEmpty()) {
+            for (Objednavka o : this.zasielky) {
+                this.vozidlo.pridajZasielku(o);
+                hmotnost = o.getHmotnost();
+                pocetZasielok++;
+                this.zasielky.remove(o);
+            }
+            System.out.println("Vozidlo bolo nalozene. \nCelkova hmotnost nalozenych zasielok: " + hmotnost + "\nPocet nalozenych zasielok: " + pocetZasielok);
+        }
+    }
 }
