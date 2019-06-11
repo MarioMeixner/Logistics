@@ -13,6 +13,7 @@ public class Vozidlo {
         this.nosnost = nosnost * 1000;
         this.naklady = naklady;
         this.aktualnaNosnost = 0;
+        this.zasielky = new ArrayList<>();
     }
 
     public String getSpz() {

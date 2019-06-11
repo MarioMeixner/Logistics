@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -57,18 +58,25 @@ public class Sklad {
         this.zasielky.add(o);
     }
 
+    public boolean maZasielky() {
+        if (!this.zasielky.isEmpty()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public void nalozVozidlo() {
         double hmotnost = 0;
         int pocetZasielok = 0;
 
-        if (!this.zasielky.isEmpty()) {
-            for (Objednavka o : this.zasielky) {
-                this.vozidlo.pridajZasielku(o);
-                hmotnost = o.getHmotnost();
-                pocetZasielok++;
-                this.zasielky.remove(o);
-            }
-            System.out.println("Vozidlo bolo nalozene. \nCelkova hmotnost nalozenych zasielok: " + hmotnost + "\nPocet nalozenych zasielok: " + pocetZasielok);
+        for (Iterator<Objednavka> iterator = this.zasielky.iterator(); iterator.hasNext();) {
+            Objednavka o = iterator.next();
+            this.vozidlo.pridajZasielku(o);
+            hmotnost = o.getHmotnost();
+            pocetZasielok++;
+            iterator.remove();
         }
+        System.out.println("Vozidlo bolo nalozene. \nCelkova hmotnost nalozenych zasielok: " + hmotnost + "\nPocet nalozenych zasielok: " + pocetZasielok);
     }
 }

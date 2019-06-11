@@ -8,6 +8,7 @@ public class CentralnySklad extends Sklad {
     public CentralnySklad(String nazov) {
         super(nazov);
         this.vozidla = new ArrayList<>();
+        this.zasielky = new ArrayList<>();
     }
 
     public void pridajVozidlo(Vozidlo v) {
@@ -27,6 +28,7 @@ public class CentralnySklad extends Sklad {
     public void pridajZasielku(Objednavka o) {
         this.zasielky.add(o);
     }
+
     public void vylozVozidla() {
         for (Vozidlo v : this.vozidla) {
             if (!v.getZasielky().isEmpty()) {

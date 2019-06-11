@@ -361,15 +361,16 @@ class Logika {
 
     private void navratVozidielDoCS() {
         for (Sklad s : this.sklady) {
-            s.nalozVozidlo();
+            if (s.maZasielky()) {
+                s.nalozVozidlo();
+            }
         }
         this.centralnySklad.vylozVozidla();
     }
 
     private void vyzdvihniZasielku(Dron d, Sklad s) {
-        ///////////////////////////////////////////////////////////////////////////////////////
-        double hodina = d.getObjednavka().getMiesto_o().getVzdialenost() / d.getRychlost();
         d.addObjednavka(s.remObjednavku());
+        double hodina = d.getObjednavka().getMiesto_o().getVzdialenost() / d.getRychlost();
         d.setPocetNalHod(hodina);
         d.pridajPocetPrepZas();
         d.setDostupnost(false);
