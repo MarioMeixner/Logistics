@@ -33,6 +33,8 @@ public class CentralnySklad extends Sklad {
         for (Vozidlo v : this.vozidla) {
             if (!v.getZasielky().isEmpty()) {
                 this.zasielky.addAll(v.getZasielky());
+                v.vylozVozidlo();
+                v.setCelkoveNaklady(2*v.getNaklady());
             }
         }
     }
