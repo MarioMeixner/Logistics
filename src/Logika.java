@@ -395,7 +395,6 @@ class Logika {
     }
 
     private void naplnVozdilaCS() {
-        ArrayList<Objednavka> zasielkyTriedene = new ArrayList<>();
         boolean naplnene = false;
 
         for (Iterator<Objednavka> iterator = this.centralnySklad.getZasielky().iterator(); iterator.hasNext();) {
