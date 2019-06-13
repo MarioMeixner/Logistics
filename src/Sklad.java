@@ -70,6 +70,14 @@ public class Sklad {
         }
     }
 
+    public boolean maObjednavky() {
+        if (!this.objednavky.isEmpty()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public void nalozVozidlo() {
         double hmotnost = 0;
         int pocetZasielok = 0;
@@ -82,5 +90,13 @@ public class Sklad {
             iterator.remove();
         }
         System.out.println("Vozidlo bolo nalozene. \nCelkova hmotnost nalozenych zasielok: " + hmotnost + "\nPocet nalozenych zasielok: " + pocetZasielok);
+    }
+
+    public void pripravNaOdovzdanie() {
+        for (Iterator<Objednavka> iterator = this.zasielky.iterator(); iterator.hasNext();) {
+            Objednavka o = iterator.next();
+            this.pridajObjednavku(o);
+            iterator.remove();
+        }
     }
 }

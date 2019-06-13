@@ -110,8 +110,10 @@ class Logika {
                     "=  8. Naplnenie vozidiel v        =\n" +
                     "=     centralnom sklade zasielkami=\n" +
                     "=  9. Transport zasielok          =\n" +
-                    "=  10. Krok den                   =\n" +
-                    "=  11. Krok cas                   =\n" +
+                    "=  10. Odovzdanie zasielok        =\n" +
+                    "=      adresatovi                 =\n" +
+                    "=  11. Krok den                   =\n" +
+                    "=  12. Krok cas                   =\n" +
                     "===================================\n" +
                     "=  Zadaj volbu:                   =\n");
             volba = this.sc.nextInt();
@@ -147,9 +149,12 @@ class Logika {
                     transportZasielok();
                     break;
                 case 10:
-                    this.datum.krok();
+                    odovzdanieZasielok();
                     break;
                 case 11:
+                    this.datum.krok();
+                    break;
+                case 12:
                     krokCas();
                     break;
                 default:
@@ -346,15 +351,19 @@ class Logika {
                         vyzdvihniZasielku(vhodnyDron, s);
                     }
                 } else {
-                    porovnaj(vhodneDronyT1.isEmpty() ? vhodneDronyT2 : vhodneDronyT1);
+                    /*porovnaj(vhodneDronyT1.isEmpty() ? vhodneDronyT2 : vhodneDronyT1);*/
                     if (!vhodneDronyT1.isEmpty()) {
+                        porovnaj(vhodneDronyT1);
                         //priradenie zasielky vhodnemu dronu a vymazanie z frontu objednavok v sklade
-                        vyzdvihniZasielku(vhodneDronyT1.get(0), s);
+                        vyzdvihniZasielku(vhodneDronyT1.get(vhodneDronyT1.size() - 1), s);
                         System.out.println("Success T1");
-                    } else {
+                    } else if (!vhodneDronyT2.isEmpty()) {
+                        porovnaj(vhodneDronyT2);
                         //priradenie zasielky vhodnemu dronu a vymazanie z frontu objednavok v sklade
-                        vyzdvihniZasielku(vhodneDronyT2.get(0), s);
+                        vyzdvihniZasielku(vhodneDronyT2.get(vhodneDronyT2.size() - 1), s);
                         System.out.println("Success T2");
+                    } else {
+                        System.out.println("Ziadne drony v sklade");
                     }
                 }
             }
@@ -386,11 +395,19 @@ class Logika {
         d.setDostupnost(false);
     }
 
+    private void odovzdajZasielku(Dron d, Sklad s) {
+        d.addObjednavka(s.remObjednavku());
+        double hodina = d.getObjednavka().getMiesto_y().getVzdialenost() / d.getRychlost();
+        d.setPocetNalHod(hodina);
+        d.pridajPocetPrepZas();
+        d.setDostupnost(false);
+    }
+
     private void porovnaj(ArrayList<Dron> list) {
         list.sort((d1, d2) -> {
             Integer i1 = d1.getAktualneNabitie();
             Integer i2 = d2.getAktualneNabitie();
-            return i2.compareTo(i1);
+            return i1.compareTo(i2);
         });
     }
 
@@ -420,8 +437,47 @@ class Logika {
             for (Sklad s : this.sklady) {
                 if (v.getOkres().equals(s.getNazov())) {
                     s.naplnSklad(v.getZasielky());
+                    s.pripravNaOdovzdanie();
                     v.vylozVozidlo();
                 }
+            }
+        }
+    }
+
+    private void odovzdanieZasielok() {
+        ArrayList<Dron> vhodneDronyT1 = new ArrayList<>();
+        ArrayList<Dron> vhodneDronyT2 = new ArrayList<>();
+
+        for (Sklad s : this.sklady) {
+            if (s.maObjednavky()) {
+                for (Dron d : s.getDrony()) {
+                    if (((double)d.getDobaLetu() / 60) * d.getRychlost() >= s.getObjednavku().getMiesto_y().getVzdialenost() &&
+                            d.getNosnost() >= s.getObjednavku().getHmotnost()) {
+                        if (d.getDostupnost()) {
+                            if (d.getTypString().equals("I")) {
+                                vhodneDronyT1.add(d);
+                            } else {
+                                vhodneDronyT2.add(d);
+                            }
+                        }
+                    }
+                }
+
+                if (!vhodneDronyT1.isEmpty()) {
+                    this.porovnaj(vhodneDronyT1);
+                    this.odovzdajZasielku(vhodneDronyT1.get(vhodneDronyT1.size() - 1), s);
+                } else if (!vhodneDronyT2.isEmpty()) {
+                    this.porovnaj(vhodneDronyT2);
+                    this.odovzdajZasielku(vhodneDronyT2.get(vhodneDronyT2.size() - 1), s);
+                } else {
+                    System.out.println("Ziadne drony v sklade.");
+                }
+            }
+
+            for (Dron d : s.getDrony()) {
+                d.remObjednavka();
+                d.setDostupnost(true);
+                System.out.println("Zasielky boli dorucene do skladu.");
             }
         }
     }
