@@ -58,6 +58,10 @@ public class Sklad {
         this.zasielky.add(o);
     }
 
+    public void naplnSklad(ArrayList<Objednavka> zasielky) {
+        this.zasielky.addAll(zasielky);
+    }
+
     public boolean maZasielky() {
         if (!this.zasielky.isEmpty()) {
             return true;

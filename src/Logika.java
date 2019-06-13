@@ -109,8 +109,9 @@ class Logika {
                     "=     centralneho skladu          =\n" +
                     "=  8. Naplnenie vozidiel v        =\n" +
                     "=     centralnom sklade zasielkami=\n" +
-                    "=  9. Krok den                    =\n" +
-                    "=  10. Krok cas                   =\n" +
+                    "=  9. Transport zasielok          =\n" +
+                    "=  10. Krok den                   =\n" +
+                    "=  11. Krok cas                   =\n" +
                     "===================================\n" +
                     "=  Zadaj volbu:                   =\n");
             volba = this.sc.nextInt();
@@ -143,9 +144,12 @@ class Logika {
                     naplnVozdilaCS();
                     break;
                 case 9:
-                    this.datum.krok();
+                    transportZasielok();
                     break;
                 case 10:
+                    this.datum.krok();
+                    break;
+                case 11:
                     krokCas();
                     break;
                 default:
@@ -398,14 +402,28 @@ class Logika {
             Objednavka o = iterator.next();
             for (Vozidlo v : this.centralnySklad.getVozidla()) {
                 if (o.getMiesto_y().getNazov().equals(v.getOkres())) {
-                    v.pridajZasielku(o);
-                    iterator.remove();
-                    naplnene = true;
+                    if (o.getHmotnost() + v.getAktualnaNosnost() <= v.getNosnost()) {
+                        v.setAktualnaNosnost(o.getHmotnost()); //treba to iste aj pri nalozeni vozidla a vylozeni v lokalnom prekladisku
+                        v.pridajZasielku(o);
+                        iterator.remove();
+                        naplnene = true;
+                    }
                 }
             }
         }
 
         if (naplnene)
             System.out.println("Vozidla boli naplnene");
+    }
+
+    private void transportZasielok() {
+        for (Vozidlo v : this.centralnySklad.getVozidla()) {
+            for (Sklad s : this.sklady) {
+                if (v.getOkres().equals(s.getNazov())) {
+                    s.naplnSklad(v.getZasielky());
+                    v.vylozVozidlo();
+                }
+            }
+        }
     }
 }
