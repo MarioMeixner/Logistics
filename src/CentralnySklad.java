@@ -25,6 +25,10 @@ public class CentralnySklad extends Sklad {
         }
     }
 
+    public ArrayList<Objednavka> getZasielky() { return this.zasielky; }
+
+    public ArrayList<Vozidlo> getVozidla() { return this.vozidla; }
+
     public void pridajZasielku(Objednavka o) {
         this.zasielky.add(o);
     }

@@ -1,24 +1,20 @@
 public class Objednavka {
 
     private double hmotnost;
-    private Miesto miesto_o;
-    private Miesto miesto_p;
+    private Miesto miesto_x;
+    private Miesto miesto_y;
 
-    public Objednavka(double hmotnost, Miesto miesto_o, Miesto miesto_p) {
+    public Objednavka(double hmotnost, Miesto miesto_x, Miesto miesto_y) {
         this.hmotnost = hmotnost;
-        this.miesto_o = miesto_o;
-        this.miesto_p = miesto_p;
+        this.miesto_x = miesto_x;
+        this.miesto_y = miesto_y;
     }
 
-    public double getHmotnost() {
-        return this.hmotnost;
-    }
+    public double getHmotnost() { return this.hmotnost; }
 
-    public Miesto getMiesto_o() {
-        return this.miesto_o;
-    }
+    public Miesto getMiesto_x() { return this.miesto_x; }
 
-    public Miesto getMiesto_p() {
-        return this.miesto_p;
+    public Miesto getMiesto_y() {
+        return this.miesto_y;
     }
 }

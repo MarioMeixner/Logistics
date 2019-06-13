@@ -14,7 +14,7 @@ public class Sklad {
         this.nazov = nazov;
         this.drony = new ArrayList<>();
         this.vozidlo = null;
-        this.objednavky = new LinkedList<Objednavka>();
+        this.objednavky = new LinkedList<>();
         this.zasielky = new ArrayList<>();
     }
 

@@ -3,16 +3,11 @@ public class Miesto {
     private double vzdialenost;
 
     public Miesto(String nazov, double vzdialenost) {
-
         this.nazov = nazov;
         this.vzdialenost = vzdialenost;
     }
 
-    public String getNazov() {
-        return this.nazov;
-    }
+    public String getNazov() { return this.nazov; }
 
-    public double getVzdialenost() {
-        return this.vzdialenost;
-    }
+    public double getVzdialenost() { return this.vzdialenost; }
 }

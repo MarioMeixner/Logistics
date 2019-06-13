@@ -11,18 +11,6 @@ public class Datum {
         this.rok = rok;
     }
 
-    public int getDen() {
-        return this.den;
-    }
-
-    public int getMesiac() {
-        return this.mesiac;
-    }
-
-    public int getRok() {
-        return this.rok;
-    }
-
     public void krok() {
         if (this.mesiac == 1 || this.mesiac == 3 || this.mesiac == 5 || this.mesiac == 7 ||
                 this.mesiac == 8 || this.mesiac == 10 || this.mesiac == 12) {

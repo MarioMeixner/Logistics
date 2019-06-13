@@ -35,7 +35,7 @@ public class Dron {
         this.pocetPrepZas = 0;
         this.jeDostupny = true;
         this.aktualneNabitie = 100;
-        this.objednavky = new LinkedList<Objednavka>();
+        this.objednavky = new LinkedList<>();
     }
 
     public String getTypString() {

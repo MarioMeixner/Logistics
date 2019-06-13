@@ -9,6 +9,7 @@ public class Vozidlo {
     private double aktualnaNosnost;
     private ArrayList<Objednavka> zasielky;
     private double celkoveNaklady;
+    private String okres;
 
     public Vozidlo(String spz, double nosnost, double naklady) {
         this.spz = spz;
@@ -17,6 +18,7 @@ public class Vozidlo {
         this.aktualnaNosnost = 0;
         this.zasielky = new ArrayList<>();
         this.celkoveNaklady = 0;
+        this.okres = null;
     }
 
     public String getSpz() {
@@ -57,4 +59,8 @@ public class Vozidlo {
             this.zasielky.remove(index);
         }
     }
+
+    public String getOkres() { return this.okres; }
+
+    public void setOkres(String hodnota) { this.okres = hodnota; }
 }

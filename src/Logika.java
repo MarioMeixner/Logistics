@@ -96,21 +96,23 @@ class Logika {
 
         do {
             System.out.println(this.datum.toString() + " " + this.getCas());
-            System.out.print("=====Informacny system=====\n" +
-                    "===========================\n" +
-                    "=  0. Koniec              =\n" +
-                    "=  1. Pridat vozidlo      =\n" +
-                    "=  2. Vypisat vozidla     =\n" +
-                    "=  3. Pridat dron         =\n" +
-                    "=  4. Vypisat drony       =\n" +
-                    "=  5. Vytvor objednavku   =\n" +
-                    "=  6. Naplanuj let        =\n" +
-                    "=  7. Navrat vozidiel do  =\n" +
-                    "=     centralneho skladu  =\n" +
-                    "=  8. Krok den            =\n" +
-                    "=  9. Krok cas            =\n" +
-                    "===========================\n" +
-                    "=  Zadaj volbu:		      =\n");
+            System.out.print("=========Informacny system=========\n" +
+                    "===================================\n" +
+                    "=  0. Koniec                      =\n" +
+                    "=  1. Pridat vozidlo              =\n" +
+                    "=  2. Vypisat vozidla             =\n" +
+                    "=  3. Pridat dron                 =\n" +
+                    "=  4. Vypisat drony               =\n" +
+                    "=  5. Vytvor objednavku           =\n" +
+                    "=  6. Naplanuj let                =\n" +
+                    "=  7. Navrat vozidiel do          =\n" +
+                    "=     centralneho skladu          =\n" +
+                    "=  8. Naplnenie vozidiel v        =\n" +
+                    "=     centralnom sklade zasielkami=\n" +
+                    "=  9. Krok den                    =\n" +
+                    "=  10. Krok cas                   =\n" +
+                    "===================================\n" +
+                    "=  Zadaj volbu:                   =\n");
             volba = this.sc.nextInt();
             switch (volba) {
                 case 0:
@@ -138,9 +140,12 @@ class Logika {
                     navratVozidielDoCS();
                     break;
                 case 8:
-                    this.datum.krok();
+                    naplnVozdilaCS();
                     break;
                 case 9:
+                    this.datum.krok();
+                    break;
+                case 10:
                     krokCas();
                     break;
                 default:
@@ -163,6 +168,7 @@ class Logika {
         region = this.sc.next();
 
         Vozidlo v = new Vozidlo(spz, nosnost, naklady);
+        v.setOkres(region);
         this.centralnySklad.pridajVozidlo(v);
         System.out.println("Vozidlo bolo pridane.");
 
@@ -230,13 +236,13 @@ class Logika {
         region_x = this.sc.next();
         System.out.println("Zadaj vzdialenost od lokalneho prekladiska: ");
         vzdialenost_x = this.sc.nextDouble();
-        Miesto miesto_o = new Miesto(region_x, vzdialenost_x);
+        Miesto miesto_x = new Miesto(region_x, vzdialenost_x);
 
         System.out.println("Zadaj region dorucenia zasielky : ");
         region_y = this.sc.next();
         System.out.println("Zadaj vzdialenost od lokalneho prekladiska: ");
         vzdialenost_y = this.sc.nextDouble();
-        Miesto miesto_p = new Miesto(region_y, vzdialenost_y);
+        Miesto miesto_y = new Miesto(region_y, vzdialenost_y);
 
         boolean zamietnuta_x = true;
         boolean zamietnuta_y = true;
@@ -272,7 +278,7 @@ class Logika {
         }
 
         if (!zamietnuta_x && !zamietnuta_y) {
-            Objednavka objednavka = new Objednavka(hmotnostZasielky, miesto_o, miesto_p);
+            Objednavka objednavka = new Objednavka(hmotnostZasielky, miesto_x, miesto_y);
             sklad.pridajObjednavku(objednavka);
             System.out.println("Objednavka bola prijata.");
         } else
@@ -283,7 +289,7 @@ class Logika {
         ArrayList<Dron> vhodneDronyT1 = new ArrayList<>();
         ArrayList<Dron> vhodneDronyT2 = new ArrayList<>();
         ArrayList<Dron> obsadeneDrony = new ArrayList<>();
-        Dron vhodnyDron = null;
+        Dron vhodnyDron;
         double hodina;
         int volba;
 
@@ -291,7 +297,7 @@ class Logika {
             if (!s.getDrony().isEmpty()) {
                 for (Dron d : s.getDrony()) {
                     //vyhladanie vhodneho dronu na prenasku zasielky
-                    if (((double)d.getDobaLetu() / 60) * d.getRychlost() >= s.getObjednavku().getMiesto_o().getVzdialenost() &&
+                    if (((double)d.getDobaLetu() / 60) * d.getRychlost() >= s.getObjednavku().getMiesto_x().getVzdialenost() &&
                             d.getNosnost() >= s.getObjednavku().getHmotnost()) {
                         if (d.getDostupnost()) {
                             if (d.getTypString().equals("I")) {
@@ -307,11 +313,11 @@ class Logika {
                 if (!obsadeneDrony.isEmpty() && vhodneDronyT1.isEmpty() && vhodneDronyT2.isEmpty()) {
                     vhodnyDron = obsadeneDrony.get(0);
                     for (Dron d : obsadeneDrony) {
-                        if (vhodnyDron.getObjednavka().getMiesto_o().getVzdialenost() / vhodnyDron.getRychlost() > d.getObjednavka().getMiesto_o().getVzdialenost() / d.getRychlost()) {
+                        if (vhodnyDron.getObjednavka().getMiesto_x().getVzdialenost() / vhodnyDron.getRychlost() > d.getObjednavka().getMiesto_x().getVzdialenost() / d.getRychlost()) {
                             vhodnyDron = d;
                         }
                     }
-                    hodina = vhodnyDron.getObjednavka().getMiesto_o().getVzdialenost() / vhodnyDron.getRychlost();
+                    hodina = vhodnyDron.getObjednavka().getMiesto_x().getVzdialenost() / vhodnyDron.getRychlost();
                     if (hodina > 1) {
                         System.out.println("Vsetky drony su obsadene. \nNajblizsie vyzdvihnutie zasielky sa predpoklada o " + hodina + " hodin.");
                         System.out.println("1. Zrusit objednavku.");
@@ -370,7 +376,7 @@ class Logika {
 
     private void vyzdvihniZasielku(Dron d, Sklad s) {
         d.addObjednavka(s.remObjednavku());
-        double hodina = d.getObjednavka().getMiesto_o().getVzdialenost() / d.getRychlost();
+        double hodina = d.getObjednavka().getMiesto_x().getVzdialenost() / d.getRychlost();
         d.setPocetNalHod(hodina);
         d.pridajPocetPrepZas();
         d.setDostupnost(false);
@@ -382,5 +388,24 @@ class Logika {
             Integer i2 = d2.getAktualneNabitie();
             return i2.compareTo(i1);
         });
+    }
+
+    private void naplnVozdilaCS() {
+        ArrayList<Objednavka> zasielkyTriedene = new ArrayList<>();
+        boolean naplnene = false;
+
+        for (Iterator<Objednavka> iterator = this.centralnySklad.getZasielky().iterator(); iterator.hasNext();) {
+            Objednavka o = iterator.next();
+            for (Vozidlo v : this.centralnySklad.getVozidla()) {
+                if (o.getMiesto_y().getNazov().equals(v.getOkres())) {
+                    v.pridajZasielku(o);
+                    iterator.remove();
+                    naplnene = true;
+                }
+            }
+        }
+
+        if (naplnene)
+            System.out.println("Vozidla boli naplnene");
     }
 }
